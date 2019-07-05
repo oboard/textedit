@@ -10,7 +10,6 @@ class NumPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(title),
@@ -20,13 +19,7 @@ class NumPage extends StatelessWidget {
         child: new Center(
           child: new Wrap(
             children: <Widget>[
-              Checkbox(
-                value: _dotSelected,
-                activeColor: Colors.blue, //选中时的颜色
-                onChanged: (value) {
-                  _dotSelected = value;
-                },
-              )
+              new TextField(controller: _cc)
             ],
           ),
         ),

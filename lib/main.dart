@@ -41,10 +41,11 @@ ScrollController textScrollontroller = new ScrollController();
 String _count =
     '${fnGetCpmisWords(_content.text)} 个字 ${_content.text.length} 个字符 ${_content.text.split('\n').length}段'; // ${fnGetNumWords(_content.text)}个数字';;
 
+final key = new GlobalKey<ScaffoldState>();
+
 class _HomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final key = new GlobalKey<ScaffoldState>();
     //double _screenWidth() {
     //  return MediaQuery.of(context).size.width;
     //}
