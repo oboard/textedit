@@ -617,7 +617,7 @@ class SlideFadeTransition extends StatelessWidget {
       animation: animation,
       builder: (context, child) => animation.value == 0.0 ? Container() : child,
       child: SlideTransition(
-        position: Tween(
+        position: Tween<Offset>(
           begin: Offset(0.3, 0.0),
           end: Offset(0.0, 0.0),
         ).animate(animation),

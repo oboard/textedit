@@ -43,6 +43,7 @@ class NumPageState extends State<NumPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Widget widget = new Scaffold(
       appBar: new AppBar(
         title: new Text("添加序号"),
