@@ -15,19 +15,24 @@ class FindPage extends StatefulWidget {
   FindPageState createState() => FindPageState();
 }
 
-class FindPageState extends State<FindPage>  with AutomaticKeepAliveClientMixin {
+class FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
     searchfor(String s, String c, int i) async {
+      if (s.isEmpty || c.isEmpty) return;
       int start = c.indexOf(s, i);
       int end = start + s.length;
-      if (start < 10) {
-        itemsL.add(c.substring(0, start));
-      } else {
-        itemsL.add(c.substring(start - 10, start));
+
+      if (0 <= start) {
+        if (start < 10) {
+                print(start);
+                itemsL.add(c.substring(0, start));
+              } else {
+                itemsL.add(c.substring(start - 10, start));
+              }
       }
       if (c.length - end < 10) {
         itemsR.add(c.substring(end, c.length));
@@ -43,12 +48,13 @@ class FindPageState extends State<FindPage>  with AutomaticKeepAliveClientMixin 
       itemsN.clear();
       itemsL.clear();
       itemsR.clear();
-      print(searchContent.text);
 
       String s = searchContent.text, c = content.text;
+      print(c);
       searchfor(s, c, 0);
       titleCount = '${itemsN.length}条结果';
     }
+
     super.build(context);
     return new Scaffold(
       appBar: new AppBar(
@@ -57,7 +63,7 @@ class FindPageState extends State<FindPage>  with AutomaticKeepAliveClientMixin 
             children: <Widget>[
               new Expanded(
                   child: new TextField(
-                style: new TextStyle(fontSize: 20),
+                style: new TextStyle(fontSize: 20, color: Colors.white),
                 decoration: InputDecoration(
                   border: InputBorder.none,
                 ),

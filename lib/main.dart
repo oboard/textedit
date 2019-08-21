@@ -13,7 +13,8 @@ void main() => runApp(App());
 EditPageState now;
 TextEditingController content;
 List<TextEditingController> contents = new List<TextEditingController>();
-TabController tabController;
+TabBar tabBar;
+TabBarView tabBarView;
 List<EditPageState> epsList = new List<EditPageState>();
 List<String> strList = new List<String>();
 
@@ -45,7 +46,7 @@ void setFocus(int index) {
 }
 
 class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -63,14 +64,6 @@ class _HomePageState extends State<HomePage>
     }*/
   }
 
-  void freshTab() {
-    tabController.addListener(() {
-        if (tabController.index.toDouble() == tabController.animation.value) {
-          print('${tabController.index}');
-        }
-      });
-  }
-
   void add() {
     setState(() {
       TextEditingController t = new TextEditingController();
@@ -83,8 +76,30 @@ class _HomePageState extends State<HomePage>
     });
     setState(() {
       if (choices.length > 0) {
-      tabController = new TabController(length: choices.length, vsync: this);
-        freshTab();
+        TabController tabControllerE =
+            new TabController(length: choices.length, vsync: this);
+        List<Widget> tabs = choices.map((Choice choice) {
+          return new Tab(text: choice.title);
+        }).toList();
+        List<Widget> childs = choices.map((Choice choice) {
+          return new ChoiceCard(choice: choice);
+        }).toList();
+
+        tabBar = new TabBar(
+          isScrollable: true,
+          tabs: tabs,
+          controller: tabControllerE,
+        );
+
+        tabBarView = new TabBarView(
+          controller: tabControllerE,
+          children: childs,
+        );
+
+        tabControllerE.addListener(() {
+          print('${tabControllerE.index}');
+          setFocus(tabControllerE.index);
+        });
       }
     });
   }
@@ -99,16 +114,7 @@ class _HomePageState extends State<HomePage>
           resizeToAvoidBottomPadding: false,
           appBar: new AppBar(
             elevation: 2.0,
-            bottom: new TabBar(
-              isScrollable: true,
-              tabs: choices.map((Choice choice) {
-                return new Tab(text: choice.title);
-              }).toList(),
-              controller: tabController,
-              onTap: (index) {
-                setFocus(index);
-              },
-            ),
+            bottom: tabBar,
             title: new Stack(
               children: <Widget>[
                 new Offstage(
@@ -334,12 +340,7 @@ class _HomePageState extends State<HomePage>
               ],
             ),
           ),
-          body: new TabBarView(
-            controller: tabController,
-            children: choices.map((Choice choice) {
-              return new ChoiceCard(choice: choice);
-            }).toList(),
-          ),
+          body: tabBarView,
         ),
       ),
     );
