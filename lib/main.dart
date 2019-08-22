@@ -7,12 +7,14 @@ import 'package:textedit/ReplacePage.dart';
 import 'package:textedit/PopupMenuButtonE.dart';
 import 'package:textedit/NumPage.dart';
 import 'package:textedit/FindPage.dart';
+import 'package:flutter/foundation.dart';
 
-void main() => runApp(App());
+void main() {
+  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  runApp(App());
+}
 
-EditPageState now;
 TextEditingController content;
-List<TextEditingController> contents = new List<TextEditingController>();
 TabBar tabBar;
 TabBarView tabBarView;
 List<EditPageState> epsList = new List<EditPageState>();
@@ -23,8 +25,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '文本编辑',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: new ThemeData(
+        brightness: Brightness.light,
+        primarySwatch: Colors.pink,
       ),
       home: HomePage(),
     );
@@ -38,13 +41,6 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-var _isToolbarVisible = false;
-
-void setFocus(int index) {
-  now = epsList[index];
-  content = contents[index];
-}
-
 class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   @override
@@ -52,8 +48,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
-    TextEditingController t = new TextEditingController();
-    contents.add(t);
     add();
     super.initState();
     /*if (Platform.isAndroid) {
@@ -66,8 +60,6 @@ class _HomePageState extends State<HomePage>
 
   void add() {
     setState(() {
-      TextEditingController t = new TextEditingController();
-      contents.add(t);
       EditPage b = new EditPage();
       choices.add(new Choice(
         title: '${choices.length + 1}',
@@ -90,7 +82,6 @@ class _HomePageState extends State<HomePage>
           tabs: tabs,
           controller: tabControllerE,
         );
-
         tabBarView = new TabBarView(
           controller: tabControllerE,
           children: childs,
@@ -98,7 +89,6 @@ class _HomePageState extends State<HomePage>
 
         tabControllerE.addListener(() {
           print('${tabControllerE.index}');
-          setFocus(tabControllerE.index);
         });
       }
     });
@@ -107,241 +97,100 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return new MaterialApp(
-      home: new DefaultTabController(
-        length: choices.length,
-        child: new Scaffold(
-          resizeToAvoidBottomPadding: false,
-          appBar: new AppBar(
-            elevation: 2.0,
-            bottom: tabBar,
-            title: new Stack(
-              children: <Widget>[
-                new Offstage(
-                  offstage: _isToolbarVisible,
-                  child: new ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      new Row(
-                        children: <Widget>[
-                          new Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
-                            child: new PopupMenuButtonE<int>(
-                              child: new Container(
-                                padding: const EdgeInsets.fromLTRB(
-                                    15.0, 0.0, 15.0, 0.0),
-                                alignment: Alignment.center,
-                                decoration: ShapeDecoration(
-                                  shape: new StadiumBorder(),
-                                  color: Colors.white,
-                                ),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Icon(Icons.text_format,
-                                        color: Colors.blue),
-                                    new Text(
-                                      '开始',
-                                      style: new TextStyle(color: Colors.blue),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              elevation: 100,
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              onSelected: (int result) async {
-                                switch (result) {
-                                  case 1:
-                                    add();
-                                    break;
-                                  case 2:
-                                    var clipboardData = await Clipboard.getData(
-                                        Clipboard.kTextPlain);
-                                    if (clipboardData != null)
-                                      content.text = clipboardData.text;
-                                    break;
-                                  case 3:
-                                    content.text = '';
-                                    break;
-                                }
-                              },
-                              itemBuilder: (BuildContext context) => [
-                                PopupMenuItemE<int>(
-                                  value: 0,
-                                  child: new Row(
-                                    children: <Widget>[
-                                      new Icon(Icons.close),
-                                      new Text('  取消'),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItemE<int>(
-                                  value: 1,
-                                  child: new Row(
-                                    children: <Widget>[
-                                      new Icon(Icons.add_box),
-                                      new Text('  新标签页')
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItemE<int>(
-                                  value: 2,
-                                  child: new Row(
-                                    children: <Widget>[
-                                      new Icon(Icons.content_paste),
-                                      new Text('  从剪辑版导入')
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItemE<int>(
-                                  value: 3,
-                                  child: new Row(
-                                    children: <Widget>[
-                                      new Icon(Icons.close),
-                                      new Text('  清空')
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          new IconButton(
-                            tooltip: '查找',
-                            icon: new Icon(Icons.search),
-                            onPressed: () async {
-                              now.textSelection = content.selection;
-                              var result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FindPage()),
-                              );
-                              if (result != null) {
-                                //content.selection = TextSelection.fromPosition(TextPosition(offset:int.parse('$result')));
-                                content.selection = TextSelection(
-                                    baseOffset: int.parse('$result'),
-                                    extentOffset: int.parse('$result') +
-                                        searchContent.text.length);
-                              } else {
-                                content.selection = now.textSelection;
-                              }
-                            },
-                          ),
-                          new IconButton(
-                            tooltip: '替换',
-                            icon: new Icon(Icons.find_replace),
-                            onPressed: () async {
-                              textSelection = content.selection;
-                              content.text = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ReplacePage(),
-                                ),
-                              );
-                              content.selection = textSelection;
-                              now.freshState();
-                            },
-                          ),
-                          new IconButton(
-                            tooltip: '添加序号',
-                            icon: new Icon(Icons.format_list_numbered),
-                            onPressed: () async {
-                              textSelection = content.selection;
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => NumPage(),
-                                ),
-                              );
-                              content.selection = textSelection;
-                              now.freshState();
-                            },
-                          ),
-                          new IconButton(
-                            tooltip: '字体变大',
-                            icon: new Stack(
-                              children: <Widget>[
-                                new Icon(Icons.title),
-                                new Icon(
-                                  Icons.trending_up,
-                                  color: Colors.white70,
-                                )
-                              ],
-                            ),
-                            onPressed: () async {
-                              now.textSize++;
-                              now.freshState();
-                            },
-                          ),
-                          new IconButton(
-                            tooltip: '字体变小',
-                            icon: new Stack(
-                              children: <Widget>[
-                                new Icon(Icons.title),
-                                new Icon(
-                                  Icons.trending_down,
-                                  color: Colors.white70,
-                                )
-                              ],
-                            ),
-                            onPressed: () async {
-                              now.textSize--;
-                              now.freshState();
-                            },
-                          ),
-                          new IconButton(
-                            tooltip: '旋转',
-                            icon: new Icon(Icons.rotate_left),
-                            onPressed: () {
-                              now.rotateAngle = -now.rotateAngle;
-                              now.freshState();
-                            },
-                          ),
-                          new IconButton(
-                            icon: new Icon(Icons.content_copy),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return new AlertDialog(
-                                    title: new Text("提示"),
-                                    content: new Text("确认复制到剪辑版吗？"),
-                                    actions: <Widget>[
-                                      new FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: new Text("取消"),
-                                      ),
-                                      new FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          Clipboard.setData(new ClipboardData(
-                                              text: content.text));
-                                          now.key.currentState.showSnackBar(
-                                              new SnackBar(
-                                                  content:
-                                                      new Text('已复制到剪辑版')));
-                                        },
-                                        child: new Text("确认"),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      )
-                    ],
+    return new DefaultTabController(
+      length: choices.length,
+      child: new Scaffold(
+        resizeToAvoidBottomPadding: false,
+        appBar: new AppBar(
+          elevation: 0.0,
+          title: new Row(
+            children: <Widget>[
+              new Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                child: new PopupMenuButtonE<int>(
+                  child: new Container(
+                    padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
+                    alignment: Alignment.center,
+                    decoration: ShapeDecoration(
+                      shape: new StadiumBorder(),
+                      color: Colors.white,
+                    ),
+                    child: new Row(
+                      children: <Widget>[
+                        new Icon(Icons.text_format,
+                            color: Theme.of(context).primaryColor),
+                        new Text(
+                          '开始',
+                          style: new TextStyle(
+                              color: Theme.of(context).primaryColor),
+                        ),
+                      ],
+                    ),
                   ),
+                  elevation: 100,
+                  onSelected: (int result) async {
+                    switch (result) {
+                      case 1:
+                        add();
+                        break;
+                      case 2:
+                        var clipboardData =
+                            await Clipboard.getData(Clipboard.kTextPlain);
+                        if (clipboardData != null)
+                          content.text = clipboardData.text;
+                        break;
+                      case 3:
+                        content.text = '';
+                        break;
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItemE<int>(
+                      value: 0,
+                      child: new Row(
+                        children: <Widget>[
+                          new Icon(Icons.close),
+                          new Text('  取消'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItemE<int>(
+                      value: 1,
+                      child: new Row(
+                        children: <Widget>[
+                          new Icon(Icons.add_box),
+                          new Text('  新标签页')
+                        ],
+                      ),
+                    ),
+                    PopupMenuItemE<int>(
+                      value: 2,
+                      child: new Row(
+                        children: <Widget>[
+                          new Icon(Icons.content_paste),
+                          new Text('  从剪辑版导入')
+                        ],
+                      ),
+                    ),
+                    PopupMenuItemE<int>(
+                      value: 3,
+                      child: new Row(
+                        children: <Widget>[
+                          new Icon(Icons.close),
+                          new Text('  清空')
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              new Expanded(
+                child: tabBar,
+              ),
+            ],
           ),
-          body: tabBarView,
         ),
+        body: tabBarView,
       ),
     );
   }

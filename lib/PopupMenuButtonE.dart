@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
 import 'package:flutter/material.dart';
 
 // Examples can assume:
@@ -162,8 +163,7 @@ class PopupMenuItemE<T> extends PopupMenuEntry<T> {
     this.value,
     this.enabled = true,
     this.height = _kMenuItemHeight,
-    this.textStyle,
-    @required this.child,
+    this.child,
   })  : assert(enabled != null),
         assert(height != null),
         super(key: key);
@@ -182,12 +182,6 @@ class PopupMenuItemE<T> extends PopupMenuEntry<T> {
   /// Defaults to 48 pixels.
   @override
   final double height;
-
-  /// The text style of the popup menu entry.
-  ///
-  /// If this property is null, then [PopupMenuThemeData.textStyle] is used.
-  /// If [PopupMenuThemeData.textStyle] is also null, then [ThemeData.textTheme.subhead] is used.
-  final TextStyle textStyle;
 
   /// The widget below this widget in the tree.
   ///
@@ -227,7 +221,7 @@ class PopupMenuItemEState<T, W extends PopupMenuItemE<T>> extends State<W> {
   ///
   /// By default, this returns [PopupMenuItemE.child]. Override this to put
   /// something else in the menu entry.
-  @protected
+
   Widget buildChild() => widget.child;
 
   /// The handler for when the user selects the menu item.
@@ -236,7 +230,7 @@ class PopupMenuItemEState<T, W extends PopupMenuItemE<T>> extends State<W> {
   ///
   /// By default, uses [Navigator.pop] to return the [PopupMenuItemE.value] from
   /// the menu route.
-  @protected
+
   void handleTap() {
     Navigator.pop<T>(context, widget.value);
   }
@@ -244,10 +238,7 @@ class PopupMenuItemEState<T, W extends PopupMenuItemE<T>> extends State<W> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
-    TextStyle style =
-        widget.textStyle ?? popupMenuTheme.textStyle ?? theme.textTheme.subhead;
-
+    TextStyle style = theme.textTheme.subhead;
     if (!widget.enabled) style = style.copyWith(color: theme.disabledColor);
 
     Widget item = AnimatedDefaultTextStyle(
@@ -443,7 +434,6 @@ class _PopupMenu<T> extends StatelessWidget {
         (route.items.length +
             1.5); // 1.0 for the width and 0.5 for the last item's fade.
     final List<Widget> children = <Widget>[];
-    final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
 
     for (int i = 0; i < route.items.length; i += 1) {
       final double start = (i + 1) * unit;
@@ -499,10 +489,8 @@ class _PopupMenu<T> extends StatelessWidget {
         return Opacity(
           opacity: opacity.evaluate(route.animation),
           child: Material(
-            shape: route.shape ?? popupMenuTheme.shape,
-            color: route.color ?? popupMenuTheme.color,
             type: MaterialType.card,
-            elevation: route.elevation ?? popupMenuTheme.elevation ?? 8.0,
+            elevation: route.elevation,
             child: Align(
               alignment: AlignmentDirectional.topEnd,
               widthFactor: width.evaluate(route.animation),
@@ -608,11 +596,8 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
     this.initialValue,
     this.elevation,
     this.theme,
-    this.popupMenuTheme,
     this.barrierLabel,
     this.semanticLabel,
-    this.shape,
-    this.color,
   });
 
   final RelativeRect position;
@@ -621,9 +606,6 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
   final double elevation;
   final ThemeData theme;
   final String semanticLabel;
-  final ShapeBorder shape;
-  final Color color;
-  final PopupMenuThemeData popupMenuTheme;
 
   @override
   Animation<double> createAnimation() {
@@ -662,8 +644,6 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
     }
 
     Widget menu = _PopupMenu<T>(route: this, semanticLabel: semanticLabel);
-    if (popupMenuTheme != null)
-      menu = PopupMenuTheme(textStyle: popupMenuTheme.textStyle, child: menu);
     if (theme != null) menu = Theme(data: theme, child: menu);
 
     return MediaQuery.removePadding(
@@ -740,14 +720,12 @@ class _PopupMenuRoute<T> extends PopupRoute<T> {
 ///  * [SemanticsConfiguration.namesRoute], for a description of edge triggered
 ///    semantics.
 Future<T> showMenu<T>({
-  @required BuildContext context,
-  @required RelativeRect position,
-  @required List<PopupMenuEntry<T>> items,
+  BuildContext context,
+  RelativeRect position,
+  List<PopupMenuEntry<T>> items,
   T initialValue,
-  double elevation,
+  double elevation = 8.0,
   String semanticLabel,
-  ShapeBorder shape,
-  Color color,
 }) {
   assert(context != null);
   assert(position != null);
@@ -773,11 +751,8 @@ Future<T> showMenu<T>({
         elevation: elevation,
         semanticLabel: label,
         theme: Theme.of(context, shadowThemeOnly: true),
-        popupMenuTheme: PopupMenuTheme.of(context),
         barrierLabel:
             MaterialLocalizations.of(context).modalBarrierDismissLabel,
-        shape: shape,
-        color: color,
       ));
 }
 
@@ -858,19 +833,17 @@ class PopupMenuButtonE<T> extends StatefulWidget {
   /// The [itemBuilder] argument must not be null.
   const PopupMenuButtonE({
     Key key,
-    @required this.itemBuilder,
+    this.itemBuilder,
     this.initialValue,
     this.onSelected,
     this.onCanceled,
     this.tooltip,
-    this.elevation,
+    this.elevation = 8.0,
     this.padding = const EdgeInsets.all(8.0),
     this.child,
     this.icon,
     this.offset = Offset.zero,
     this.enabled = true,
-    this.shape,
-    this.color,
   })  : assert(itemBuilder != null),
         assert(offset != null),
         assert(enabled != null),
@@ -938,28 +911,12 @@ class PopupMenuButtonE<T> extends StatefulWidget {
   /// but doesn't currently have anything to show in the menu.
   final bool enabled;
 
-  /// If provided, the shape used for the menu.
-  ///
-  /// If this property is null, then [PopupMenuThemeData.shape] is used.
-  /// If [PopupMenuThemeData.shape] is also null, then the default shape for
-  /// [MaterialType.card] is used. This default shape is a rectangle with
-  /// rounded edges of BorderRadius.circular(2.0).
-  final ShapeBorder shape;
-
-  /// If provided, the background color used for the menu.
-  ///
-  /// If this property is null, then [PopupMenuThemeData.color] is used.
-  /// If [PopupMenuThemeData.color] is also null, then
-  /// Theme.of(context).cardColor is used.
-  final Color color;
-
   @override
   _PopupMenuButtonEState<T> createState() => _PopupMenuButtonEState<T>();
 }
 
 class _PopupMenuButtonEState<T> extends State<PopupMenuButtonE<T>> {
   void showButtonMenu() {
-    final PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
     final RenderBox button = context.findRenderObject();
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     final RelativeRect position = RelativeRect.fromRect(
@@ -975,12 +932,10 @@ class _PopupMenuButtonEState<T> extends State<PopupMenuButtonE<T>> {
     if (items.isNotEmpty) {
       showMenu<T>(
         context: context,
-        elevation: widget.elevation ?? popupMenuTheme.elevation,
+        elevation: widget.elevation,
         items: items,
         initialValue: widget.initialValue,
         position: position,
-        shape: widget.shape ?? popupMenuTheme.shape,
-        color: widget.color ?? popupMenuTheme.color,
       ).then<void>((T newValue) {
         if (!mounted) return null;
         if (newValue == null) {
@@ -1008,7 +963,7 @@ class _PopupMenuButtonEState<T> extends State<PopupMenuButtonE<T>> {
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
     return widget.child != null
-        ? GestureDetector(
+        ? InkWell(
             onTap: widget.enabled ? showButtonMenu : null,
             child: widget.child,
           )

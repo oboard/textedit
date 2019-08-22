@@ -55,11 +55,11 @@ class DraggableScrollbar extends StatefulWidget {
   DraggableScrollbar({
     Key key,
     this.alwaysVisibleScrollThumb = false,
-    @required this.heightScrollThumb,
-    @required this.backgroundColor,
-    @required this.scrollThumbBuilder,
-    @required this.child,
-    @required this.controller,
+    this.heightScrollThumb,
+    this.backgroundColor,
+    this.scrollThumbBuilder,
+    this.child,
+    this.controller,
     this.padding,
     this.scrollbarAnimationDuration = const Duration(milliseconds: 300),
     this.scrollbarTimeToFade = const Duration(milliseconds: 600),
@@ -74,8 +74,8 @@ class DraggableScrollbar extends StatefulWidget {
     Key key,
     Key scrollThumbKey,
     this.alwaysVisibleScrollThumb = false,
-    @required this.child,
-    @required this.controller,
+    this.child,
+    this.controller,
     this.heightScrollThumb = 48.0,
     this.backgroundColor = Colors.white,
     this.padding,
@@ -92,8 +92,8 @@ class DraggableScrollbar extends StatefulWidget {
     Key key,
     Key scrollThumbKey,
     this.alwaysVisibleScrollThumb = false,
-    @required this.child,
-    @required this.controller,
+    this.child,
+    this.controller,
     this.heightScrollThumb = 48.0,
     this.backgroundColor = Colors.white,
     this.padding,
@@ -110,8 +110,8 @@ class DraggableScrollbar extends StatefulWidget {
     Key key,
     Key scrollThumbKey,
     this.alwaysVisibleScrollThumb = false,
-    @required this.child,
-    @required this.controller,
+    this.child,
+    this.controller,
     this.heightScrollThumb = 48.0,
     this.backgroundColor = Colors.white,
     this.padding,
@@ -128,13 +128,13 @@ class DraggableScrollbar extends StatefulWidget {
   _DraggableScrollbarState createState() => _DraggableScrollbarState();
 
   static buildScrollThumbAndLabel(
-      {@required Widget scrollThumb,
-      @required Color backgroundColor,
-      @required Animation<double> thumbAnimation,
-      @required Animation<double> labelAnimation,
-      @required Text labelText,
-      @required BoxConstraints labelConstraints,
-      @required bool alwaysVisibleScrollThumb}) {
+      {Widget scrollThumb,
+      Color backgroundColor,
+      Animation<double> thumbAnimation,
+      Animation<double> labelAnimation,
+      Text labelText,
+      BoxConstraints labelConstraints,
+      bool alwaysVisibleScrollThumb}) {
     var scrollThumbAndLabel = labelText == null
         ? scrollThumb
         : Row(
@@ -281,9 +281,9 @@ class ScrollLabel extends StatelessWidget {
 
   const ScrollLabel({
     Key key,
-    @required this.child,
-    @required this.animation,
-    @required this.backgroundColor,
+    this.child,
+    this.animation,
+    this.backgroundColor,
     this.constraints = _defaultConstraints,
   }) : super(key: key);
 
@@ -607,8 +607,8 @@ class SlideFadeTransition extends StatelessWidget {
 
   const SlideFadeTransition({
     Key key,
-    @required this.animation,
-    @required this.child,
+    this.animation,
+    this.child,
   }) : super(key: key);
 
   @override

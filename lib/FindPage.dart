@@ -25,22 +25,21 @@ class FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin {
       if (s.isEmpty || c.isEmpty) return;
       int start = c.indexOf(s, i);
       int end = start + s.length;
-
       if (0 <= start) {
         if (start < 10) {
-                print(start);
-                itemsL.add(c.substring(0, start));
-              } else {
-                itemsL.add(c.substring(start - 10, start));
-              }
+          print(start);
+          itemsL.add(c.substring(0, start));
+        } else {
+          itemsL.add(c.substring(start - 10, start));
+        }
+        if (c.length - end < 10) {
+          itemsR.add(c.substring(end, c.length));
+        } else {
+          itemsR.add(c.substring(end, end + 10));
+        }
+        itemsN.add(start);
+        if (c.length - i >= s.length) searchfor(s, c, end);
       }
-      if (c.length - end < 10) {
-        itemsR.add(c.substring(end, c.length));
-      } else {
-        itemsR.add(c.substring(end, end + 10));
-      }
-      itemsN.add(start);
-      if (c.length - i >= s.length) searchfor(s, c, end);
     }
 
     _search() {
