@@ -48,7 +48,7 @@ class FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin {
       itemsL.clear();
       itemsR.clear();
 
-      String s = searchContent.text, c = content.text;
+      String s = searchContent.text, c = Content.text;
       print(c);
       searchfor(s, c, 0);
       titleCount = '${itemsN.length}条结果';
@@ -84,32 +84,39 @@ class FindPageState extends State<FindPage> with AutomaticKeepAliveClientMixin {
             children: <Widget>[
               new Flexible(
                 child: DraggableScrollbar.arrows(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Theme.of(context).indicatorColor,
                   controller: searchScrollController,
                   child: new ListView.builder(
                     itemCount: itemsL.length,
                     controller: searchScrollController,
                     itemBuilder: (context, index) {
-                      return new ListTile(
-                        onTap: () {
-                          Navigator.pop(context, itemsN[index]);
-                        },
-                        title: new RichText(
-                          text: TextSpan(
-                            style: new TextStyle(
-                                color: Colors.black, fontSize: 20),
-                            children: <TextSpan>[
-                              new TextSpan(text: itemsL[index]),
-                              new TextSpan(
-                                  text: searchContent.text,
-                                  style: new TextStyle(
+                      return new Column(
+                        children: <Widget>[
+                          new Divider(),
+                          new ListTile(
+                            onTap: () {
+                              Navigator.pop(context, itemsN[index]);
+                            },
+                            title: new RichText(
+                              text: TextSpan(
+                                style: new TextStyle(
+                                    color: Colors.black, fontSize: 20),
+                                children: <TextSpan>[
+                                  new TextSpan(text: itemsL[index]),
+                                  new TextSpan(
+                                    text: searchContent.text,
+                                    style: new TextStyle(
                                       background: new Paint()
                                         ..color =
-                                            Color.fromARGB(100, 255, 255, 0))),
-                              new TextSpan(text: itemsR[index])
-                            ],
+                                            Color.fromARGB(100, 255, 255, 0),
+                                    ),
+                                  ),
+                                  new TextSpan(text: itemsR[index])
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       );
                     },
                   ),

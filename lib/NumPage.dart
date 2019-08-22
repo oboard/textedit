@@ -23,7 +23,7 @@ class NumPageState extends State<NumPage> with AutomaticKeepAliveClientMixin {
     setState(() {
       itemsL.clear();
       itemsR.clear();
-      List<String> data = content.text.split('\n');
+      List<String> data = Content.text.split('\n');
       for (int i = 0; i < data.length; i++) {
         itemsR.add(data[i]);
         itemsL.add(numform.replaceAll('n', '${i + 1}'));
@@ -133,14 +133,14 @@ class NumPageState extends State<NumPage> with AutomaticKeepAliveClientMixin {
                       onPressed: () {
                         Navigator.of(context).pop();
 
-                        content.text = '';
+                        Content.text = '';
                         for (int i = 0; i < itemsL.length; i++) {
                           if (groupValue == 1) {
-                            content.text += itemsL[i] + itemsR[i];
+                            Content.text += itemsL[i] + itemsR[i];
                           } else {
-                            content.text += itemsR[i] + itemsL[i];
+                            Content.text += itemsR[i] + itemsL[i];
                           }
-                          if (i != itemsL.length - 1) content.text += '\n';
+                          if (i != itemsL.length - 1) Content.text += '\n';
                         }
                         itemsL.clear();
                         itemsR.clear();

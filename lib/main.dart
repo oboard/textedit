@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:textedit/AboutPage.dart';
 
 import 'package:textedit/EditPage.dart';
 import 'package:textedit/ReplacePage.dart';
@@ -14,7 +17,8 @@ void main() {
   runApp(App());
 }
 
-TextEditingController content;
+// ignore: non_constant_identifier_names
+TextEditingController Content;
 TabBar tabBar;
 TabBarView tabBarView;
 List<EditPageState> epsList = new List<EditPageState>();
@@ -23,11 +27,12 @@ List<String> strList = new List<String>();
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: '文本编辑',
       theme: new ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.pink,
+        primarySwatch: Colors.blue,
       ),
       home: HomePage(),
     );
@@ -134,13 +139,20 @@ class _HomePageState extends State<HomePage>
                         add();
                         break;
                       case 2:
-                        var clipboardData =
-                            await Clipboard.getData(Clipboard.kTextPlain);
-                        if (clipboardData != null)
-                          content.text = clipboardData.text;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DonatePage(),
+                          ),
+                        );
                         break;
                       case 3:
-                        content.text = '';
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AboutPage(),
+                          ),
+                        );
                         break;
                     }
                   },
@@ -154,7 +166,7 @@ class _HomePageState extends State<HomePage>
                         ],
                       ),
                     ),
-                    PopupMenuItemE<int>(
+                    new PopupMenuItemE<int>(
                       value: 1,
                       child: new Row(
                         children: <Widget>[
@@ -163,21 +175,21 @@ class _HomePageState extends State<HomePage>
                         ],
                       ),
                     ),
-                    PopupMenuItemE<int>(
+                    new PopupMenuItemE<int>(
                       value: 2,
                       child: new Row(
                         children: <Widget>[
-                          new Icon(Icons.content_paste),
-                          new Text('  从剪辑版导入')
+                          new Icon(Icons.attach_money),
+                          new Text('  捐赠')
                         ],
                       ),
                     ),
-                    PopupMenuItemE<int>(
+                    new PopupMenuItemE<int>(
                       value: 3,
                       child: new Row(
                         children: <Widget>[
-                          new Icon(Icons.close),
-                          new Text('  清空')
+                          new Icon(Icons.text_format),
+                          new Text('  关于')
                         ],
                       ),
                     ),

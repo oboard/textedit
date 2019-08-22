@@ -46,33 +46,33 @@ class ReplacePageState extends State<ReplacePage>
                       decoration: InputDecoration(labelText: '替换'),
                       controller: _rc,
                       focusNode: fn2),
-                  new PopupMenuButton<int>(
-                    child: new FlatButton.icon(
-                      icon: new Icon(Icons.add),
-                      onPressed: null,
-                      label: new Text('特殊格式'),
-                    ),
-                    onSelected: (int result) {},
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<int>>[
-                      const PopupMenuItem<int>(
-                        value: 0,
-                        child: Text('Working a lot harder'),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 1,
-                        child: Text('Being a lot smarter'),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 2,
-                        child: Text('Being a self-starter'),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 3,
-                        child: Text('Placed in charge of trading charter'),
-                      ),
-                    ],
-                  ),
+//                  new PopupMenuButton<int>(
+//                    child: new FlatButton.icon(
+//                      icon: new Icon(Icons.add),
+//                      onPressed: null,
+//                      label: new Text('特殊格式'),
+//                    ),
+//                    onSelected: (int result) {},
+//                    itemBuilder: (BuildContext context) =>
+//                        <PopupMenuEntry<int>>[
+//                      const PopupMenuItem<int>(
+//                        value: 0,
+//                        child: Text('Working a lot harder'),
+//                      ),
+//                      const PopupMenuItem<int>(
+//                        value: 1,
+//                        child: Text('Being a lot smarter'),
+//                      ),
+//                      const PopupMenuItem<int>(
+//                        value: 2,
+//                        child: Text('Being a self-starter'),
+//                      ),
+//                      const PopupMenuItem<int>(
+//                        value: 3,
+//                        child: Text('Placed in charge of trading charter'),
+//                      ),
+//                    ],
+//                  ),
                   new FlatButton(
                       color: Colors.blue,
                       child: new Text(
@@ -81,7 +81,7 @@ class ReplacePageState extends State<ReplacePage>
                       ),
                       onPressed: () {
                         Navigator.pop(context,
-                            content.text.replaceAll(_cc.text, _rc.text));
+                            Content.text.replaceAll(_cc.text, _rc.text));
                       }),
                 ],
               ),
