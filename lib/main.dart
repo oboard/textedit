@@ -1,15 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:textedit/AboutPage.dart';
 
 import 'package:textedit/EditPage.dart';
-import 'package:textedit/ReplacePage.dart';
 import 'package:textedit/PopupMenuButtonE.dart';
-import 'package:textedit/NumPage.dart';
-import 'package:textedit/FindPage.dart';
 import 'package:flutter/foundation.dart';
 
 void main() {
